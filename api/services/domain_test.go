@@ -5,7 +5,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/ariel17/railgun/config"
+	"github.com/ariel17/railgun/api/config"
 )
 
 func TestGenerateValidationCode(t *testing.T) {

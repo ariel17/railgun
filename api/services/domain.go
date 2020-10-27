@@ -4,7 +4,7 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/ariel17/railgun/config"
+	"github.com/ariel17/railgun/api/config"
 )
 
 const charset = `abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789[]()*^{}.-,;:_!º"\|?=/&%$<>`
