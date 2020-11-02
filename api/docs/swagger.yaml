@@ -1,0 +1,8 @@
+info:
+  contact: {}
+paths:
+  /ping:
+    get:
+      description: Returns an HTTP 200 OK header.
+      summary: HTTP 200 OK header as availavility proof.
+swagger: "2.0"
