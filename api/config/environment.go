@@ -17,10 +17,14 @@ func IsProduction() bool {
 	return environment == productionEnv
 }
 
-func init() {
+func setEnvironment() {
 	var exists bool
 	environment, exists = os.LookupEnv(envKeyName)
 	if !exists {
 		environment = testEnv
 	}
+}
+
+func init() {
+	setEnvironment()
 }
