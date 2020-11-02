@@ -1,0 +1,22 @@
+# Golang CircleCI 2.0 configuration file
+#
+# Check https://circleci.com/docs/2.0/language-go/ for more details
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/golang:1.13
+    environment:
+      ENVIRONMENT: test
+      AUTH0_DOMAIN: ariel17.auth0.com
+      AUTH0_AUDIENCE: https://railgun.ariel17.com.ar
+    working_directory: /go/src/github.com/ariel17/railgun
+    steps:
+      - checkout
+      - run:
+          working_directory: /go/src/github.com/ariel17/railgun/api
+          command: go mod tidy
+      - run:
+          working_directory: /go/src/github.com/ariel17/railgun/api
+          command: go test -v ./... -race
+

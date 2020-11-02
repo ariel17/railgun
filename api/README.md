@@ -1,4 +1,5 @@
 # Railgun API
+[![CircleCI](https://circleci.com/gh/ariel17/railgun/tree/master.svg?style=svg)](https://circleci.com/gh/ariel17/railgun/tree/master)
 
 ## Local execution
 ```bash
