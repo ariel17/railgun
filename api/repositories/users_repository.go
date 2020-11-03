@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"github.com/ariel17/railgun/api/config"
 	"github.com/ariel17/railgun/api/entities"
 )
 
@@ -13,10 +12,6 @@ type UsersRepository interface {
 	DeleteByID(id string) error
 }
 
-var (
-	isProduction func() bool
-)
-
 // NewUsersRepository creates a new instance of the configured repository for
 // users entity.
 func NewUsersRepository() UsersRepository {
@@ -24,8 +19,4 @@ func NewUsersRepository() UsersRepository {
 		return newUsersRepositoryAuth0()
 	}
 	return newUsersRepositoryMock()
-}
-
-func init() {
-	isProduction = config.IsProduction
 }
