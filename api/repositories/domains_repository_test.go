@@ -13,7 +13,7 @@ func TestNewDomainsRepository(t *testing.T) {
 		expectedType DomainsRepository
 	}{
 		{"real", true, &databaseDomainsRepository{}},
-		{"mock", false, &mockDBRepository{}},
+		{"mock", false, &MockDBRepository{}},
 	}
 
 	for _, tc := range testCases {

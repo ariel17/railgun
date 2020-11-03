@@ -2,15 +2,15 @@ package repositories
 
 import "github.com/ariel17/railgun/api/entities"
 
-type mockDBRepository struct {
+type MockDBRepository struct {
 	Domain *entities.Domain
 	Err error
 }
 
-func (m *mockDBRepository) GetByID(_ int) (*entities.Domain, error) {
+func (m *MockDBRepository) GetByID(_ int) (*entities.Domain, error) {
 	return m.Domain, m.Err
 }
 
 func newMockDomainsRepository() DomainsRepository {
-	return &mockDBRepository{}
+	return &MockDBRepository{}
 }

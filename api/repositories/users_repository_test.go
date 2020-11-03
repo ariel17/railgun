@@ -16,7 +16,7 @@ func TestNewUsersRepository(t *testing.T) {
 		expectedType UsersRepository
 	}{
 		{"real", true, &auth0Repository{}},
-		{"mock", false, &mockRepository{}},
+		{"mock", false, &MockRepository{}},
 	}
 
 	for _, tc := range testCases {
@@ -46,10 +46,10 @@ func TestUsersRepository_GetByID(t *testing.T) {
 			repository := NewUsersRepository()
 			if tc.successful {
 				if tc.exists {
-					repository.(*mockRepository).User = &entities.User{ID: id}
+					repository.(*MockRepository).User = &entities.User{ID: id}
 				}
 			} else {
-				repository.(*mockRepository).Err = errors.New("mocked error")
+				repository.(*MockRepository).Err = errors.New("mocked error")
 			}
 			user, err := repository.GetByID(id)
 			assert.Equal(t, err == nil, tc.successful)
@@ -71,7 +71,7 @@ func TestUsersRepository_DeleteByID(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			repository := NewUsersRepository()
 			if !tc.successful {
-				repository.(*mockRepository).Err = errors.New("mocked error")
+				repository.(*MockRepository).Err = errors.New("mocked error")
 			}
 			err := repository.DeleteByID(id)
 			assert.Equal(t, err == nil, tc.successful)

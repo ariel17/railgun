@@ -2,19 +2,19 @@ package repositories
 
 import "github.com/ariel17/railgun/api/entities"
 
-type mockRepository struct{
+type MockRepository struct {
 	User *entities.User
-	Err error
+	Err  error
 }
 
-func newUsersRepositoryMock() UsersRepository {
-	return &mockRepository{}
-}
-
-func (m *mockRepository) GetByID(_ string) (*entities.User, error) {
+func (m *MockRepository) GetByID(_ string) (*entities.User, error) {
 	return m.User, m.Err
 }
 
-func (m *mockRepository) DeleteByID(_ string) error {
+func (m *MockRepository) DeleteByID(_ string) error {
 	return m.Err
+}
+
+func newUsersRepositoryMock() UsersRepository {
+	return &MockRepository{}
 }
