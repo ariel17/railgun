@@ -12,11 +12,16 @@ type UsersRepository interface {
 	DeleteByID(id string) error
 }
 
+var (
+	usersRepositoryImplementation func() UsersRepository
+)
+
 // NewUsersRepository creates a new instance of the configured repository for
 // users entity.
 func NewUsersRepository() UsersRepository {
-	if isProduction() {
-		return newUsersRepositoryAuth0()
-	}
-	return newUsersRepositoryMock()
+	return usersRepositoryImplementation()
+}
+
+func init() {
+	usersRepositoryImplementation = newUsersRepositoryAuth0
 }

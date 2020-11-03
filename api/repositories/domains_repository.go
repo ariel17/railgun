@@ -8,11 +8,16 @@ type DomainsRepository interface {
 	GetByID(id int) (*entities.Domain, error)
 }
 
+var (
+	domainsRepositoryImplementation func() DomainsRepository
+)
+
 // NewDomainsRepository creates a new instance of Domain's repository
 // implementation based on the current environment.
 func NewDomainsRepository() DomainsRepository {
-	if isProduction() {
-		return newDatabaseDomainsRepository()
-	}
-	return newMockDomainsRepository()
+	return domainsRepositoryImplementation()
+}
+
+func init() {
+	domainsRepositoryImplementation = newDatabaseDomainsRepository
 }

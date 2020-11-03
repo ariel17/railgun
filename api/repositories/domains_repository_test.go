@@ -2,43 +2,24 @@ package repositories
 
 import (
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
-func TestNewDomainsRepository(t *testing.T) {
-	testCases := []struct {
-		name         string
-		isProduction bool
-		expectedType DomainsRepository
-	}{
-		{"real", true, &databaseDomainsRepository{}},
-		{"mock", false, &MockDBRepository{}},
-	}
+func TestDomainsRepository(t *testing.T) {
+	domainsRepositoryImplementation = newMockDomainsRepository
 
-	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
-			isProduction = func() bool {
-				return tc.isProduction
-			}
-			r := NewDomainsRepository()
-			assert.IsType(t, tc.expectedType, r)
-		})
-	}
-}
+	t.Run("get by id", func(t *testing.T) {
+		t.Fatal("implement me")
+	})
 
-func TestDomainsRepository_GetByID(t *testing.T) {
-	t.Fatal("implement me")
-}
+	t.Run("get by user id", func(t *testing.T) {
+		t.Fatal("implement me")
+	})
 
-func TestDomainsRepository_GetByUserID(t *testing.T) {
-	t.Fatal("implement me")
-}
+	t.Run("update", func(t *testing.T) {
+		t.Fatal("implement me")
+	})
 
-func TestDomainsRepository_Update(t *testing.T) {
-	t.Fatal("implement me")
-}
-
-func TestDomainsRepository_DeleteByID(t *testing.T) {
-	t.Fatal("implement me")
+	t.Run("delete by id", func(t *testing.T) {
+		t.Fatal("implement me")
+	})
 }
