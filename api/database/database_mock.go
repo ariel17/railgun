@@ -6,19 +6,11 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 )
 
-type MockDB struct {
-	mysqlDB
-	DB *sql.DB
-	Mock sqlmock.Sqlmock
-}
-
-func newMock() DB {
+// NewMock creates a new instance of the mocked database.
+func NewMock() (*sql.DB, sqlmock.Sqlmock){
 	db, mock, err := sqlmock.New()
 	if err != nil {
 		panic(err)
 	}
-	return &MockDB{
-		DB: db,
-		Mock: mock,
-	}
+	return db, mock
 }

@@ -1,25 +1,45 @@
 package repositories
 
 import (
+	"database/sql"
+	"strconv"
+
 	"github.com/ariel17/railgun/api/database"
 	"github.com/ariel17/railgun/api/entities"
 )
 
 type databaseDomainsRepository struct {
-	DB database.DB
+	DB *sql.DB
 }
 
 func newDatabaseDomainsRepository() DomainsRepository {
 	return &databaseDomainsRepository{
-		DB: database.New(),
+		DB: database.NewMySQL(),
 	}
 }
 
 func (d *databaseDomainsRepository) GetByID(id int) (*entities.Domain, error) {
-	domain := []entities.Domain{}
-	err := d.DB.Select(&domain, "SELECT * FROM domains WHERE id = ?", id)
+	rows, err := d.DB.Query("SELECT user_id, url, code, verified FROM domains WHERE id = ?", id)
 	if err != nil {
 		return &entities.Domain{}, err
 	}
-	return &domain[0], nil
+	defer rows.Close()
+	for rows.Next() {
+		var userID, url, code, verified string
+		if err := rows.Scan(&userID, &url, &code, &verified); err != nil {
+			return &entities.Domain{}, err
+		}
+		v, err := strconv.ParseBool(verified)
+		if err != nil {
+			return &entities.Domain{}, err
+		}
+		return &entities.Domain{
+			ID: id,
+			UserID: userID,
+			URL: url,
+			Code: code,
+			Verified: v,
+		}, nil
+	}
+	return nil, nil
 }

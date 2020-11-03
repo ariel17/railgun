@@ -10,7 +10,6 @@ require (
 	github.com/go-playground/assert/v2 v2.0.1
 	github.com/go-resty/resty/v2 v2.3.0
 	github.com/go-sql-driver/mysql v1.4.0
-	github.com/jmoiron/sqlx v1.2.0
 	github.com/stretchr/testify v1.6.1
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14
 	github.com/swaggo/gin-swagger v1.3.0
