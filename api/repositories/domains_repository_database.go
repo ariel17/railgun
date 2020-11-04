@@ -21,7 +21,7 @@ func newDatabaseDomainsRepository() DomainsRepository {
 func (d *databaseDomainsRepository) GetByID(id int) (*entities.Domain, error) {
 	rows, err := d.DB.Query("SELECT user_id, url, code, verified FROM domains WHERE id = ?", id)
 	if err != nil {
-		return &entities.Domain{}, err
+		return nil, err
 	}
 	defer rows.Close()
 	for rows.Next() {
@@ -31,7 +31,7 @@ func (d *databaseDomainsRepository) GetByID(id int) (*entities.Domain, error) {
 		}
 		v, err := strconv.ParseBool(verified)
 		if err != nil {
-			return &entities.Domain{}, err
+			return nil, err
 		}
 		return &entities.Domain{
 			ID: id,
