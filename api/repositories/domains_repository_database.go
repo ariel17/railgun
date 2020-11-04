@@ -27,7 +27,7 @@ func (d *databaseDomainsRepository) GetByID(id int) (*entities.Domain, error) {
 	for rows.Next() {
 		var userID, url, code, verified string
 		if err := rows.Scan(&userID, &url, &code, &verified); err != nil {
-			return &entities.Domain{}, err
+			return nil, err
 		}
 		v, err := strconv.ParseBool(verified)
 		if err != nil {
