@@ -6,7 +6,20 @@ import (
 	"gopkg.in/auth0.v5/management"
 )
 
+type Auth0Management management.Management
+
+func (am *Auth0Management) GetUserManager() *management.UserManager {
+	return am.User
+}
+
+type Auth0UserManagement interface {
+	New(domain string, options ...management.ManagementOption) (*management.Management, error)
+	WithClientCredentials(clientID, clientSecret string) management.ManagementOption
+	GetUserManager() *management.UserManager
+}
+
 type auth0Repository struct {
+	// TODO replace with custom interface
 	m *management.Management
 }
 
