@@ -5,7 +5,8 @@ import "github.com/ariel17/railgun/api/entities"
 // DomainsRepository is the behaviour contract for all Domain's repository
 // implementations.
 type DomainsRepository interface {
-	GetByID(id int) (*entities.Domain, error)
+	GetByID(id int64) (*entities.Domain, error)
+	Add(domain *entities.Domain) error
 }
 
 var (

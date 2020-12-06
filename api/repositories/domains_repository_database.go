@@ -18,7 +18,7 @@ func newDatabaseDomainsRepository() DomainsRepository {
 	}
 }
 
-func (d *databaseDomainsRepository) GetByID(id int) (*entities.Domain, error) {
+func (d *databaseDomainsRepository) GetByID(id int64) (*entities.Domain, error) {
 	rows, err := d.DB.Query("SELECT user_id, url, code, verified FROM domains WHERE id = ?", id)
 	if err != nil {
 		return nil, err
@@ -42,4 +42,13 @@ func (d *databaseDomainsRepository) GetByID(id int) (*entities.Domain, error) {
 		}, nil
 	}
 	return nil, nil
+}
+
+func (d *databaseDomainsRepository) Add(domain *entities.Domain) error {
+	inserted, err := d.DB.Exec("INSERT INTO domains (user_id, url, code, verified) VALUES (?, ?, ?, false)", domain.UserID, domain.URL, domain.Code)
+	if err != nil {
+		return err
+	}
+	domain.ID, err = inserted.LastInsertId()
+	return err
 }
