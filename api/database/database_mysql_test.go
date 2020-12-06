@@ -2,14 +2,15 @@ package database
 
 import (
 	"fmt"
+	"os"
 	"testing"
 
-	"github.com/go-playground/assert/v2"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/ariel17/railgun/api/config"
 )
 
-func TestDBURL(t *testing.T) {
+func TestMain(m *testing.M) {
 	username := config.DatabaseUsername
 	password := config.DatabasePassword
 	host := config.DatabaseHost
@@ -28,6 +29,17 @@ func TestDBURL(t *testing.T) {
 	config.DatabasePort = 3306
 	config.DatabaseName = "railgun"
 
+	os.Exit(m.Run())
+}
+
+func TestDBURL(t *testing.T) {
 	url := fmt.Sprintf("%s:%s@(%s:%d)/%s", config.DatabaseUsername, config.DatabasePassword, config.DatabaseHost, config.DatabasePort, config.DatabaseName)
 	assert.Equal(t, url, dbURL())
+}
+
+func TestNewMySQL(t *testing.T) {
+	t.Run("ok", func(t *testing.T) {
+		c := NewMySQL()
+		assert.NotNil(t, c)
+	})
 }
