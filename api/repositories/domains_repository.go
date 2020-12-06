@@ -8,6 +8,7 @@ type DomainsRepository interface {
 	GetByID(id int64) (*entities.Domain, error)
 	Add(domain *entities.Domain) error
 	Update(domain *entities.Domain) error
+	DeleteByID(id int64) error
 }
 
 var (
