@@ -7,6 +7,7 @@ import "github.com/ariel17/railgun/api/entities"
 type DomainsRepository interface {
 	GetByID(id int64) (*entities.Domain, error)
 	Add(domain *entities.Domain) error
+	Update(domain *entities.Domain) error
 }
 
 var (

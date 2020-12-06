@@ -52,3 +52,8 @@ func (d *databaseDomainsRepository) Add(domain *entities.Domain) error {
 	domain.ID, err = inserted.LastInsertId()
 	return err
 }
+
+func (d *databaseDomainsRepository) Update(domain *entities.Domain) error {
+	_, err := d.DB.Exec("UPDATE domains SET url = ?, code = ?, verified = false WHERE id = ?", domain.URL, domain.Code, domain.ID)
+	return err
+}

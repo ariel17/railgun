@@ -15,6 +15,10 @@ func (m *MockDBRepository) Add(_ *entities.Domain) error {
 	return m.Err
 }
 
+func (m *MockDBRepository) Update(_ *entities.Domain) error {
+	return m.Err
+}
+
 func newMockDomainsRepository() DomainsRepository {
 	return &MockDBRepository{}
 }

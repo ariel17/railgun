@@ -104,6 +104,43 @@ func TestDatabaseDomainsRepository_Add(t *testing.T) {
 	}
 }
 
+func TestDatabaseDomainsRepository_Update(t *testing.T) {
+	testCases := []struct {
+		name    string
+		isError bool
+	}{
+		{"ok", false},
+		{"failed", true},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			domain := entities.Domain{
+				UserID: "fake-123",
+				URL: "ariel17.com.ar",
+				Code: "random-123",
+			}
+			db, mock := database.NewMock()
+			r := &databaseDomainsRepository{
+				DB: db,
+			}
+			if tc.isError {
+				prepareDomainUpdateWithError(mock, domain)
+			} else {
+				prepareDomainUpdate(mock, domain)
+			}
+			err := r.Update(&domain)
+			if tc.isError {
+				assert.NotNil(t, err)
+				assert.Equal(t, "mocked error", err.Error())
+			} else {
+				assert.Nil(t, err)
+			}
+		})
+	}
+}
+
+
 func expectDomainSelect(m sqlmock.Sqlmock, id int64) *sqlmock.ExpectedQuery {
 	return m.ExpectQuery("SELECT user_id, url, code, verified").
 		WithArgs([]driver.Value{id}...)
@@ -112,6 +149,11 @@ func expectDomainSelect(m sqlmock.Sqlmock, id int64) *sqlmock.ExpectedQuery {
 func expectDomainInsert(m sqlmock.Sqlmock, domain entities.Domain) *sqlmock.ExpectedExec {
 	return m.ExpectExec("INSERT INTO domain").
 		WithArgs(domain.UserID, domain.URL, domain.Code)
+}
+
+func expectDomainUpdate(m sqlmock.Sqlmock, domain entities.Domain) *sqlmock.ExpectedExec {
+	return m.ExpectExec("UPDATE domains SET").
+		WithArgs(domain.URL, domain.Code, domain.ID)
 }
 
 func prepareDomainGetByID(m sqlmock.Sqlmock, id int64, values []driver.Value) {
@@ -132,4 +174,12 @@ func prepareDomainInsert(m sqlmock.Sqlmock, domain entities.Domain, id int64) {
 
 func prepareDomainInsertWithError(m sqlmock.Sqlmock, domain entities.Domain) {
 	expectDomainInsert(m, domain).WillReturnError(errors.New("mocked error"))
+}
+
+func prepareDomainUpdate(m sqlmock.Sqlmock, domain entities.Domain) {
+	expectDomainUpdate(m, domain).WillReturnResult(sqlmock.NewResult(domain.ID, 1))
+}
+
+func prepareDomainUpdateWithError(m sqlmock.Sqlmock, domain entities.Domain) {
+	expectDomainUpdate(m, domain).WillReturnError(errors.New("mocked error"))
 }
