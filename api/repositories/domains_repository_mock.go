@@ -7,8 +7,12 @@ type MockDBRepository struct {
 	Err error
 }
 
-func (m *MockDBRepository) GetByID(_ int) (*entities.Domain, error) {
+func (m *MockDBRepository) GetByID(_ int64) (*entities.Domain, error) {
 	return m.Domain, m.Err
+}
+
+func (m *MockDBRepository) Add(_ *entities.Domain) error {
+	return m.Err
 }
 
 func newMockDomainsRepository() DomainsRepository {

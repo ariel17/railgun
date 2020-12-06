@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/ariel17/railgun/api/database"
+	"github.com/ariel17/railgun/api/entities"
 )
 
 var (
@@ -22,7 +23,7 @@ func TestNewDatabaseDomainRepository(t *testing.T) {
 }
 
 func TestDatabaseDomainsRepository_GetByID(t *testing.T) {
-	id := 10
+	id := int64(10)
 	testCases := []struct {
 		name    string
 		isError bool
@@ -64,19 +65,71 @@ func TestDatabaseDomainsRepository_GetByID(t *testing.T) {
 	}
 }
 
-func expectDomainQuery(m sqlmock.Sqlmock, id int) *sqlmock.ExpectedQuery {
+func TestDatabaseDomainsRepository_Add(t *testing.T) {
+	id := int64(5)
+	testCases := []struct {
+		name    string
+		isError bool
+	}{
+		{"ok", false},
+		{"failed", true},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			domain := entities.Domain{
+				UserID: "fake-123",
+				URL: "ariel17.com.ar",
+				Code: "random-123",
+			}
+			db, mock := database.NewMock()
+			r := &databaseDomainsRepository{
+				DB: db,
+			}
+			if tc.isError {
+				prepareDomainInsertWithError(mock, domain)
+			} else {
+				prepareDomainInsert(mock, domain, id)
+			}
+			err := r.Add(&domain)
+			if tc.isError {
+				assert.Equal(t, int64(0), domain.ID)
+				assert.NotNil(t, err)
+				assert.Equal(t, "mocked error", err.Error())
+			} else {
+				assert.Equal(t, id, domain.ID)
+				assert.Nil(t, err)
+			}
+		})
+	}
+}
+
+func expectDomainSelect(m sqlmock.Sqlmock, id int64) *sqlmock.ExpectedQuery {
 	return m.ExpectQuery("SELECT user_id, url, code, verified").
 		WithArgs([]driver.Value{id}...)
 }
 
-func prepareDomainGetByID(m sqlmock.Sqlmock, id int, values []driver.Value) {
+func expectDomainInsert(m sqlmock.Sqlmock, domain entities.Domain) *sqlmock.ExpectedExec {
+	return m.ExpectExec("INSERT INTO domain").
+		WithArgs(domain.UserID, domain.URL, domain.Code)
+}
+
+func prepareDomainGetByID(m sqlmock.Sqlmock, id int64, values []driver.Value) {
 	rows := sqlmock.NewRows(columns)
-	expectDomainQuery(m, id).WillReturnRows(rows)
+	expectDomainSelect(m, id).WillReturnRows(rows)
 	if values != nil {
 		rows.AddRow(values...)
 	}
 }
 
-func prepareDomainGetByIDWithError(m sqlmock.Sqlmock, id int) {
-	expectDomainQuery(m, id).WillReturnError(errors.New("mocked error"))
+func prepareDomainGetByIDWithError(m sqlmock.Sqlmock, id int64) {
+	expectDomainSelect(m, id).WillReturnError(errors.New("mocked error"))
+}
+
+func prepareDomainInsert(m sqlmock.Sqlmock, domain entities.Domain, id int64) {
+	expectDomainInsert(m, domain).WillReturnResult(sqlmock.NewResult(id, 1))
+}
+
+func prepareDomainInsertWithError(m sqlmock.Sqlmock, domain entities.Domain) {
+	expectDomainInsert(m, domain).WillReturnError(errors.New("mocked error"))
 }
