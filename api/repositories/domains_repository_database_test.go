@@ -15,6 +15,12 @@ var (
 	columns = []string{"user_id", "url", "code", "verified"}
 )
 
+func TestNewDatabaseDomainRepository(t *testing.T) {
+	r := newDatabaseDomainsRepository()
+	_, ok := r.(*databaseDomainsRepository)
+	assert.True(t, ok)
+}
+
 func TestDatabaseDomainsRepository_GetByID(t *testing.T) {
 	id := 10
 	testCases := []struct {
@@ -24,6 +30,7 @@ func TestDatabaseDomainsRepository_GetByID(t *testing.T) {
 		found bool
 	}{
 		{"found ok", false, []driver.Value{"auth0-1234", "http://ariel17.com.ar", "12345", "false"}, true},
+		{"found failed by not boolean", true, []driver.Value{"auth0-1234", "http://ariel17.com.ar", "12345", "wat?"}, true},
 		{"not found ok", false, nil, false},
 		{"failed", true, nil, false},
 	}
