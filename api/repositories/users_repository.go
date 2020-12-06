@@ -1,7 +1,6 @@
 package repositories
 
 import (
-	"github.com/ariel17/railgun/api/config"
 	"github.com/ariel17/railgun/api/entities"
 )
 
@@ -14,18 +13,15 @@ type UsersRepository interface {
 }
 
 var (
-	isProduction func() bool
+	usersRepositoryImplementation func() UsersRepository
 )
 
 // NewUsersRepository creates a new instance of the configured repository for
 // users entity.
 func NewUsersRepository() UsersRepository {
-	if isProduction() {
-		return newUsersRepositoryAuth0()
-	}
-	return newUsersRepositoryMock()
+	return usersRepositoryImplementation()
 }
 
 func init() {
-	isProduction = config.IsProduction
+	usersRepositoryImplementation = newUsersRepositoryAuth0
 }
