@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"errors"
 	"strconv"
 
 	"github.com/ariel17/railgun/api/database"
@@ -56,4 +57,19 @@ func (d *databaseDomainsRepository) Add(domain *entities.Domain) error {
 func (d *databaseDomainsRepository) Update(domain *entities.Domain) error {
 	_, err := d.DB.Exec("UPDATE domains SET url = ?, code = ?, verified = false WHERE id = ?", domain.URL, domain.Code, domain.ID)
 	return err
+}
+
+func (d *databaseDomainsRepository) DeleteByID(id int64) error {
+	deleted, err := d.DB.Exec("DELETE domains WHERE id = ?", id)
+	if err != nil {
+		return err
+	}
+	rows, err := deleted.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rows != 1 {
+		return errors.New("domain not found")
+	}
+	return nil
 }

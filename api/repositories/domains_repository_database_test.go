@@ -140,6 +140,37 @@ func TestDatabaseDomainsRepository_Update(t *testing.T) {
 	}
 }
 
+func TestDatabaseDomainsRepository_Delete(t *testing.T) {
+	id := int64(10)
+	testCases := []struct {
+		name    string
+		isError bool
+	}{
+		{"ok", false},
+		{"failed", true},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			db, mock := database.NewMock()
+			r := &databaseDomainsRepository{
+				DB: db,
+			}
+			if tc.isError {
+				prepareDomainDeleteByIDWithError(mock, id)
+			} else {
+				prepareDomainDeleteByID(mock, id)
+			}
+			err := r.DeleteByID(id)
+			if tc.isError {
+				assert.NotNil(t, err)
+				assert.Equal(t, "mocked error", err.Error())
+			} else {
+				assert.Nil(t, err)
+			}
+		})
+	}
+}
 
 func expectDomainSelect(m sqlmock.Sqlmock, id int64) *sqlmock.ExpectedQuery {
 	return m.ExpectQuery("SELECT user_id, url, code, verified").
@@ -154,6 +185,10 @@ func expectDomainInsert(m sqlmock.Sqlmock, domain entities.Domain) *sqlmock.Expe
 func expectDomainUpdate(m sqlmock.Sqlmock, domain entities.Domain) *sqlmock.ExpectedExec {
 	return m.ExpectExec("UPDATE domains SET").
 		WithArgs(domain.URL, domain.Code, domain.ID)
+}
+
+func expectDomainDelete(m sqlmock.Sqlmock, id int64) *sqlmock.ExpectedExec {
+	return m.ExpectExec("DELETE domains WHERE id").WithArgs(id)
 }
 
 func prepareDomainGetByID(m sqlmock.Sqlmock, id int64, values []driver.Value) {
@@ -182,4 +217,12 @@ func prepareDomainUpdate(m sqlmock.Sqlmock, domain entities.Domain) {
 
 func prepareDomainUpdateWithError(m sqlmock.Sqlmock, domain entities.Domain) {
 	expectDomainUpdate(m, domain).WillReturnError(errors.New("mocked error"))
+}
+
+func prepareDomainDeleteByID(m sqlmock.Sqlmock, id int64) {
+	expectDomainDelete(m, id).WillReturnResult(sqlmock.NewResult(1, 1))
+}
+
+func prepareDomainDeleteByIDWithError(m sqlmock.Sqlmock, id int64) {
+	expectDomainDelete(m, id).WillReturnError(errors.New("mocked error"))
 }
