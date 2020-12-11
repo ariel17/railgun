@@ -13,7 +13,7 @@ func (m *MockDBRepository) GetByID(_ int64) (*entities.Domain, error) {
 	return m.Domain, m.Err
 }
 
-func (m *MockDBRepository) GetByName(_ string) (*entities.Domain, error) {
+func (m *MockDBRepository) GetByURL(_ string) (*entities.Domain, error) {
 	return m.Domain, m.Err
 }
 

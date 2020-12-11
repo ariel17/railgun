@@ -45,8 +45,8 @@ func (d *databaseDomainsRepository) GetByID(id int64) (*entities.Domain, error) 
 	return nil, nil
 }
 
-func (d *databaseDomainsRepository) GetByName(domain string) (*entities.Domain, error) {
-	rows, err := d.DB.Query("SELECT id, user_id, url, code, verified FROM domains WHERE url = ?", domain)
+func (d *databaseDomainsRepository) GetByURL(url string) (*entities.Domain, error) {
+	rows, err := d.DB.Query("SELECT id, user_id, url, code, verified FROM domains WHERE url = ?", url)
 	if err != nil {
 		return nil, err
 	}

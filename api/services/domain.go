@@ -29,7 +29,7 @@ func GenerateValidationCode() string {
 
 // GetDomain returns the domain data contained in storage, if exists.
 func GetDomain(domain string) (*entities.Domain, error) {
-	return DomainsRepository.GetByName(domain)
+	return DomainsRepository.GetByURL(domain)
 }
 
 func init() {
