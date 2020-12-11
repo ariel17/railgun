@@ -17,7 +17,7 @@ func TestPingController(t *testing.T) {
 	defer ts.Close()
 
 	rest := resty.New()
-	response, err := rest.R().Get("http://:8080/ping")
+	response, err := rest.R().Get(ts.URL + "/ping")
 	assert.Nil(t, err)
 	assert.NotNil(t, response)
 	assert.Equal(t, http.StatusOK, response.StatusCode())
