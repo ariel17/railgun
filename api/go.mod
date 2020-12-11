@@ -14,6 +14,7 @@ require (
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14
 	github.com/swaggo/gin-swagger v1.3.0
 	github.com/swaggo/swag v1.6.9
+	google.golang.org/appengine v1.6.6
 	gopkg.in/auth0.v5 v5.0.0
 	gopkg.in/square/go-jose.v2 v2.5.1
 )

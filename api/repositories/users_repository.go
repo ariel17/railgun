@@ -11,17 +11,3 @@ type UsersRepository interface {
 	// DeleteByID removes the user by its ID, if exists.
 	DeleteByID(id string) error
 }
-
-var (
-	usersRepositoryImplementation func() UsersRepository
-)
-
-// NewUsersRepository creates a new instance of the configured repository for
-// users entity.
-func NewUsersRepository() UsersRepository {
-	return usersRepositoryImplementation()
-}
-
-func init() {
-	usersRepositoryImplementation = newUsersRepositoryAuth0
-}

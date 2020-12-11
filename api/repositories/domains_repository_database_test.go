@@ -17,7 +17,7 @@ var (
 )
 
 func TestNewDatabaseDomainRepository(t *testing.T) {
-	r := newDatabaseDomainsRepository()
+	r := NewDatabaseDomainsRepository()
 	_, ok := r.(*databaseDomainsRepository)
 	assert.True(t, ok)
 }
@@ -28,7 +28,7 @@ func TestDatabaseDomainsRepository_GetByID(t *testing.T) {
 		name    string
 		isError bool
 		values  []driver.Value
-		found bool
+		found   bool
 	}{
 		{"found ok", false, []driver.Value{"auth0-1234", "http://ariel17.com.ar", "12345", "false"}, true},
 		{"found failed by not boolean", true, []driver.Value{"auth0-1234", "http://ariel17.com.ar", "12345", "wat?"}, true},
@@ -79,8 +79,8 @@ func TestDatabaseDomainsRepository_Add(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			domain := entities.Domain{
 				UserID: "fake-123",
-				URL: "ariel17.com.ar",
-				Code: "random-123",
+				URL:    "ariel17.com.ar",
+				Code:   "random-123",
 			}
 			db, mock := database.NewMock()
 			r := &databaseDomainsRepository{
@@ -117,8 +117,8 @@ func TestDatabaseDomainsRepository_Update(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			domain := entities.Domain{
 				UserID: "fake-123",
-				URL: "ariel17.com.ar",
-				Code: "random-123",
+				URL:    "ariel17.com.ar",
+				Code:   "random-123",
 			}
 			db, mock := database.NewMock()
 			r := &databaseDomainsRepository{
