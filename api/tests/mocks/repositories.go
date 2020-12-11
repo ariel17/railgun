@@ -1,12 +1,14 @@
 package mocks
 
 import (
+	"errors"
+
 	"github.com/ariel17/railgun/api/entities"
 	"github.com/ariel17/railgun/api/repositories"
 	"github.com/ariel17/railgun/api/services"
 )
 
-func SelectExistingDomain() {
+func DomainExists() {
 	dr := &repositories.MockDBRepository{}
 	services.DomainsRepository = dr
 	domain := entities.Domain{
@@ -17,4 +19,14 @@ func SelectExistingDomain() {
 		Verified: false,
 	}
 	dr.Domain = &domain
+}
+
+func DomainNotExists() {
+	services.DomainsRepository = &repositories.MockDBRepository{}
+}
+
+func DomainOperationFails() {
+	services.DomainsRepository = &repositories.MockDBRepository{
+		Err: errors.New("mocked error :D"),
+	}
 }

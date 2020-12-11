@@ -14,21 +14,37 @@ import (
 )
 
 func TestGetDomainController(t *testing.T) {
-	// TODO create tests cases
-
 	r := gin.Default()
 	r.GET("/domains/:value", GetDomainController)
 	ts := httptest.NewServer(r)
 	defer ts.Close()
 
-	mocks.SelectExistingDomain()
-
 	rest := resty.New()
-	response, err := rest.R().Get(ts.URL + "/domains/ariel17.com.ar")
-	assert.Nil(t, err)
-	assert.NotNil(t, response)
-	assert.Equal(t, http.StatusOK, response.StatusCode())
 
-	body := tests.GetGoldenFile(t, "./testdata/domain_get_ok.json")
-	assert.Equal(t, string(body), response.String())
+	testCases := []struct {
+		name       string
+		scenario   func()
+		status     int
+		goldenPath string
+	}{
+		{"found", mocks.DomainExists, http.StatusOK, "./testdata/domain_get_ok.json"},
+		{"not found", mocks.DomainNotExists, http.StatusNotFound, ""},
+		{"fails by error", mocks.DomainOperationFails, http.StatusInternalServerError, ""},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			tc.scenario()
+			response, err := rest.R().Get(ts.URL + "/domains/ariel17.com.ar")
+			assert.Nil(t, err)
+			assert.NotNil(t, response)
+			assert.Equal(t, tc.status, response.StatusCode())
+
+			if tc.goldenPath != "" {
+				body := tests.GetGoldenFile(t, tc.goldenPath)
+				assert.Equal(t, string(body), response.String())
+			}
+		})
+	}
+
 }

@@ -14,7 +14,7 @@ func GetDomainController(c *gin.Context) {
 	value := c.Param("value")
 	domain, err := services.GetDomain(value)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 	if domain == nil {
