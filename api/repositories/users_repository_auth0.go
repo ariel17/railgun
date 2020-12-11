@@ -9,7 +9,7 @@ type auth0Repository struct {
 	m auth0.UserManager
 }
 
-func newUsersRepositoryAuth0() UsersRepository {
+func NewUsersRepositoryAuth0() UsersRepository {
 	return &auth0Repository{
 		m: auth0.NewUserManager(),
 	}

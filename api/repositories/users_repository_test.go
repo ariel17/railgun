@@ -7,8 +7,7 @@ import (
 )
 
 func TestNewUsersRepository(t *testing.T) {
-	usersRepositoryImplementation = newUsersRepositoryMock
-	r := NewUsersRepository()
+	r := newUsersRepositoryMock()
 	_, ok := r.(*MockUsersRepository)
 	assert.True(t, ok)
 }

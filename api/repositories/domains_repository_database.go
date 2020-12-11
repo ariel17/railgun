@@ -13,7 +13,7 @@ type databaseDomainsRepository struct {
 	DB *sql.DB
 }
 
-func newDatabaseDomainsRepository() DomainsRepository {
+func NewDatabaseDomainsRepository() DomainsRepository {
 	return &databaseDomainsRepository{
 		DB: database.NewMySQL(),
 	}
@@ -28,6 +28,35 @@ func (d *databaseDomainsRepository) GetByID(id int64) (*entities.Domain, error) 
 	for rows.Next() {
 		var userID, url, code, verified string
 		if err := rows.Scan(&userID, &url, &code, &verified); err != nil {
+			return nil, err
+		}
+		v, err := strconv.ParseBool(verified)
+		if err != nil {
+			return nil, err
+		}
+		return &entities.Domain{
+			ID: id,
+			UserID: userID,
+			URL: url,
+			Code: code,
+			Verified: v,
+		}, nil
+	}
+	return nil, nil
+}
+
+func (d *databaseDomainsRepository) GetByURL(url string) (*entities.Domain, error) {
+	rows, err := d.DB.Query("SELECT id, user_id, url, code, verified FROM domains WHERE url = ?", url)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var (
+			id int64
+			userID, url, code, verified string
+		)
+		if err := rows.Scan(&id, &userID, &url, &code, &verified); err != nil {
 			return nil, err
 		}
 		v, err := strconv.ParseBool(verified)
