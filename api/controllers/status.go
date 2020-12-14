@@ -7,7 +7,7 @@ import (
 )
 
 // PingController serves an status code 200 as proof of service availability.
-// @Summary HTTP 200 OK header as availavility proof.
+// @Summary HTTP 200 OK header as availability proof.
 // @Description Returns an HTTP 200 OK header.
 // @Router /ping [get]
 func PingController(c *gin.Context) {

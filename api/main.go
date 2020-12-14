@@ -13,5 +13,7 @@ func main() {
 	r := gin.Default()
 	r.GET("/ping", controllers.PingController)
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.GET("/domains", controllers.GetDomainController)
+	r.POST("/domains", controllers.NewDomainController)
 	r.Run()
 }

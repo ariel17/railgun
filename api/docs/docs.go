@@ -24,10 +24,20 @@ var doc = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/domains": {
+            "post": {
+                "summary": "HTTP 201 CREATED New domain inserted."
+            }
+        },
+        "/domains/:value": {
+            "get": {
+                "summary": "HTTP 200 OK Content of given domain."
+            }
+        },
         "/ping": {
             "get": {
                 "description": "Returns an HTTP 200 OK header.",
-                "summary": "HTTP 200 OK header as availavility proof."
+                "summary": "HTTP 200 OK header as availability proof."
             }
         }
     }

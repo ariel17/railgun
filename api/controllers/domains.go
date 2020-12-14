@@ -11,6 +11,9 @@ import (
 
 // GetDomainController handles the read endpoint request to show a domain data
 // if exists.
+// @Summary HTTP 200 OK Content of given domain.
+// @Description
+// @Router /domains/:value [get]
 func GetDomainController(c *gin.Context) {
 	value := c.Param("value")
 	domain, err := services.GetDomain(value)
@@ -27,6 +30,9 @@ func GetDomainController(c *gin.Context) {
 
 // NewDomainController handles the creation of a new domain entry to be
 // verified.
+// @Summary HTTP 201 CREATED New domain inserted.
+// @Description
+// @Router /domains [post]
 func NewDomainController(c *gin.Context) {
 	var newDomain presenters.NewDomain
 	if err := c.ShouldBindJSON(&newDomain); err != nil {
