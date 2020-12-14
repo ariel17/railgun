@@ -5,8 +5,8 @@ import (
 	"errors"
 	"strconv"
 
-	"github.com/ariel17/railgun/api/database"
 	"github.com/ariel17/railgun/api/entities"
+	"github.com/ariel17/railgun/api/repositories/database"
 )
 
 type databaseDomainsRepository struct {

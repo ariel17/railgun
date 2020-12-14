@@ -29,7 +29,7 @@ func TestGetDomainController(t *testing.T) {
 	}{
 		{"found", mocks.DomainExists, http.StatusOK, "./testdata/domain_get_ok.json"},
 		{"not found", mocks.DomainNotExists, http.StatusNotFound, ""},
-		{"fails by error", mocks.DomainOperationFails, http.StatusInternalServerError, ""},
+		{"fails by error", mocks.DomainOperationFails, http.StatusInternalServerError, "./testdata/domain_get_error.json"},
 	}
 
 	for _, tc := range testCases {
@@ -42,6 +42,46 @@ func TestGetDomainController(t *testing.T) {
 
 			if tc.goldenPath != "" {
 				body := tests.GetGoldenFile(t, tc.goldenPath)
+				assert.Equal(t, string(body), response.String())
+			}
+		})
+	}
+}
+
+func TestNewDomainController(t *testing.T) {
+	r := gin.Default()
+	r.POST("/domains", NewDomainController)
+	ts := httptest.NewServer(r)
+	defer ts.Close()
+
+	rest := resty.New()
+
+	testCases := []struct {
+		name       string
+		scenario   func()
+		status     int
+		goldenPathInput string
+		goldenPathOutput string
+	}{
+		{"new ok", mocks.DomainExists, http.StatusCreated, "./testdata/domain_post_ok_input.json", "./testdata/domain_post_ok_output.json"},
+		{"fails by invalid body", mocks.DomainNotExists, http.StatusBadRequest, "./testdata/domain_post_400_input.json", "./testdata/domain_post_400_output.json"},
+		{"fails by error", mocks.DomainOperationFails, http.StatusInternalServerError, "./testdata/domain_post_error_input.json", "./testdata/domain_post_error_output.json"},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			tc.scenario()
+
+			input := tests.GetGoldenFile(t, tc.goldenPathInput)
+			response, err := rest.R().
+				SetHeader("Content-Type", "application/json").
+				SetBody(input).Post(ts.URL + "/domains")
+			assert.Nil(t, err)
+			assert.NotNil(t, response)
+			assert.Equal(t, tc.status, response.StatusCode())
+
+			if tc.goldenPathOutput != "" {
+				body := tests.GetGoldenFile(t, tc.goldenPathOutput)
 				assert.Equal(t, string(body), response.String())
 			}
 		})

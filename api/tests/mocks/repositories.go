@@ -30,3 +30,9 @@ func DomainOperationFails() {
 		Err: errors.New("mocked error :D"),
 	}
 }
+
+func DomainAlreadyExists() {
+	services.DomainsRepository = &repositories.MockDBRepository{
+		Err: errors.New("domain already exists"),
+	}
+}

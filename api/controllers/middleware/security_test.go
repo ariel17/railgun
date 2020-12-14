@@ -1,8 +1,11 @@
 package middleware
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +24,7 @@ func TestValidateToken(t *testing.T) {
 	}{
 		{"missing token", nil, false},
 		{"invalid token", map[string]string{"Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"}, false},
-		{"valid token", map[string]string{"authorization": "Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IlFVTkRORUk1UXpsQk1qYzVOVGN4TXpBNFJVTTNNVEJFTkRKR09FWkNNVFV6TmpZNU1qY3dNdyJ9.eyJpc3MiOiJodHRwczovL2FyaWVsMTcuYXV0aDAuY29tLyIsInN1YiI6IkJsTzRPWkZtN0JSclhTYjgwNzUzNnk3NTE2NFB3S01jQGNsaWVudHMiLCJhdWQiOiJodHRwczovL3JhaWxndW4uYXJpZWwxNy5jb20uYXIiLCJpYXQiOjE2MDc3MjYyMjksImV4cCI6MTYwNzgxMjYyOSwiYXpwIjoiQmxPNE9aRm03QlJyWFNiODA3NTM2eTc1MTY0UHdLTWMiLCJndHkiOiJjbGllbnQtY3JlZGVudGlhbHMifQ.beucylQ08RTMAX1RzRf6FmSIUR833D2jVNYStioJjqNuVS3AvufuS_h1K5lugnmNBfNqApZ03HEyqXkJV0V9MDRCdu-oW_taGuB9dO_VSdIgJ9U-VAauJCdwmCGYMy_I7fon0vkUEgvGQTD0Dht1NAQfYUwDX0P_B0H6JmMafhq5_Z3rwV7tuz8rFZ5mpQAOoepbeE9NGbsO9zNulFCOF7mpteJaEvNT6CQX37pgXbLv3Jy0nLaJpYlq2eQ78pUYZOICtU49TK2w5Cjs1iETr_L3NyHHyU-6l7aV0p_ukVPOstorkZ_B9c1aJZdKpRKeqYK9FgbKrggldaiBMuM1OQ"}, true},
+		{"valid token", map[string]string{"authorization": "Bearer "+getValidToken()}, true},
 	}
 
 	for _, tc := range testCases {
@@ -75,4 +78,25 @@ func TestGetClaims(t *testing.T) {
 			}
 		})
 	}
+}
+
+// curl --request POST \
+//  --url https://ariel17.auth0.com/oauth/token \
+//  --header 'content-type: application/json' \
+//  --data '{"client_id":"BlO4OZFm7BRrXSb807536y75164PwKMc","client_secret":"DXllAOU3ACa2BpEsh-RH3O-VjAJxYosJ5_YD7TLaFLVPfoy_kdoWGvEEVO2tezV7","audience":"https://railgun.ariel17.com.ar","grant_type":"client_credentials"}'
+func getValidToken() string {
+	type Response struct {
+		AccessToken string `json:"access_token"`
+		TokenType string `json:"token_type"`
+	}
+	url := "https://ariel17.auth0.com/oauth/token"
+	payload := strings.NewReader("{\"client_id\":\"BlO4OZFm7BRrXSb807536y75164PwKMc\",\"client_secret\":\"DXllAOU3ACa2BpEsh-RH3O-VjAJxYosJ5_YD7TLaFLVPfoy_kdoWGvEEVO2tezV7\",\"audience\":\"https://railgun.ariel17.com.ar\",\"grant_type\":\"client_credentials\"}")
+	req, _ := http.NewRequest("POST", url, payload)
+	req.Header.Add("content-type", "application/json")
+	res, _ := http.DefaultClient.Do(req)
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+	var r Response
+	_ = json.Unmarshal(body, &r)
+	return r.AccessToken
 }
