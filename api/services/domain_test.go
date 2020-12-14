@@ -11,7 +11,7 @@ import (
 )
 
 func TestGenerateValidationCode(t *testing.T) {
-	code := GenerateValidationCode()
+	code := generateValidationCode()
 	assert.NotEmpty(t, code)
 	assert.Equal(t, config.CodeLength, len(code))
 }

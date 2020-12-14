@@ -8,8 +8,8 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/ariel17/railgun/api/database"
 	"github.com/ariel17/railgun/api/entities"
+	"github.com/ariel17/railgun/api/repositories/database"
 )
 
 var (

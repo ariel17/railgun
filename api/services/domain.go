@@ -16,20 +16,26 @@ var (
 	DomainsRepository repositories.DomainsRepository
 )
 
-// GenerateValidationCode creates an unique string to check for in a near future
+// GetDomain returns the domain data contained in storage, if exists.
+func GetDomain(domain string) (*entities.Domain, error) {
+	return DomainsRepository.GetByURL(domain)
+}
+
+// NewDomain creates a new domain using indicated values.
+func NewDomain(newDomain *entities.Domain) error {
+	newDomain.Code = generateValidationCode()
+	return DomainsRepository.Add(newDomain)
+}
+
+// generateValidationCode creates an unique string to check for in a near future
 // for domain ownership validation.
 // Source: https://www.calhoun.io/creating-random-strings-in-go/
-func GenerateValidationCode() string {
+func generateValidationCode() string {
 	b := make([]byte, config.CodeLength)
 	for i := range b {
 		b[i] = charset[r.Intn(len(charset))]
 	}
 	return string(b)
-}
-
-// GetDomain returns the domain data contained in storage, if exists.
-func GetDomain(domain string) (*entities.Domain, error) {
-	return DomainsRepository.GetByURL(domain)
 }
 
 func init() {

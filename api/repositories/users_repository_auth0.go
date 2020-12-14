@@ -1,8 +1,8 @@
 package repositories
 
 import (
-	"github.com/ariel17/railgun/api/auth0"
 	"github.com/ariel17/railgun/api/entities"
+	"github.com/ariel17/railgun/api/repositories/auth0"
 )
 
 type auth0Repository struct {

@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"gopkg.in/auth0.v5/management"
 
-	"github.com/ariel17/railgun/api/auth0"
+	"github.com/ariel17/railgun/api/repositories/auth0"
 )
 
 func TestAuth0Repository_GetByID(t *testing.T) {
