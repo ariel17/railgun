@@ -18,9 +18,12 @@ func (m *MockDBRepository) GetByURL(_ string) (*entities.Domain, error) {
 }
 
 func (m *MockDBRepository) Add(d *entities.Domain) error {
+	if m.Err != nil {
+		return m.Err
+	}
 	d.ID = int64(10)
 	d.Code = "code-123"
-	return m.Err
+	return nil
 }
 
 func (m *MockDBRepository) Update(_ *entities.Domain) error {
